@@ -43,7 +43,7 @@
     "@storybook/addon-essentials": "^7.1.1",
     "@storybook/addon-links": "^7.1.1",
     "@storybook/builder-vite": "^7.1.1",
-    "vite": "^4.4.7",
+    "vite": "^4.4.12",
     "@storybook/cli": "^7.1.1",
     "@storybook/react-vite": "^7.1.1",
     "@storybook/react": "^7.1.1",
