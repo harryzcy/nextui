@@ -137,14 +137,14 @@ export function HeaderBanner() {
   );
 }
 
-const PRO_BANNER_DISMISSED_KEY = "heroui-pro-banner-dismissed";
+const PRO_BANNER_DISMISSED_KEY = "heroui-pro-banner-dismissed-session";
 
 const subscribeToDismissed = (callback: () => void) => {
   window.addEventListener("storage", callback);
 
   return () => window.removeEventListener("storage", callback);
 };
-const getDismissedSnapshot = () => localStorage.getItem(PRO_BANNER_DISMISSED_KEY) === "true";
+const getDismissedSnapshot = () => sessionStorage.getItem(PRO_BANNER_DISMISSED_KEY) === "true";
 const getDismissedServerSnapshot = () => true;
 
 export function ProBanner() {
@@ -161,7 +161,7 @@ export function ProBanner() {
 
   const handleDismiss = () => {
     setDismissed(true);
-    localStorage.setItem(PRO_BANNER_DISMISSED_KEY, "true");
+    sessionStorage.setItem(PRO_BANNER_DISMISSED_KEY, "true");
   };
 
   return (
