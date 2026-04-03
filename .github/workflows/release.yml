@@ -15,11 +15,9 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    environment: npm-publish
     timeout-minutes: 15
     permissions:
       contents: write
-      id-token: write
 
     steps:
       - name: Checkout
@@ -29,11 +27,6 @@ jobs:
 
       - name: Install
         uses: ./.github/common-actions/install
-
-      - name: Setup Node for npm publish (OIDC)
-        uses: actions/setup-node@v4
-        with:
-          registry-url: "https://registry.npmjs.org"
 
       - name: Build packages
         run: pnpm build
@@ -45,12 +38,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
+      - name: Configure npm auth
+        run: npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Publish @heroui/styles
         id: publish-styles
-        working-directory: packages/styles
-        run: npm publish --provenance --access public ${{ inputs.dry_run && '--dry-run' || '' }}
+        run: pnpm --filter @heroui/styles publish --no-git-checks --access public ${{ inputs.dry_run && '--dry-run' || '' }}
 
       - name: Publish @heroui/react
         if: steps.publish-styles.outcome == 'success'
-        working-directory: packages/react
-        run: npm publish --provenance --access public ${{ inputs.dry_run && '--dry-run' || '' }}
+        run: pnpm --filter @heroui/react publish --no-git-checks --access public ${{ inputs.dry_run && '--dry-run' || '' }}
