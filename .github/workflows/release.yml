@@ -37,14 +37,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true # Continue even if the release creation fails
 
+      - name: Configure npm auth
+        run: npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Publish @heroui/styles
         id: publish-styles
         run: pnpm --filter @heroui/styles publish --no-git-checks --access public ${{ inputs.dry_run && '--dry-run' || '' }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @heroui/react
         if: steps.publish-styles.outcome == 'success'
         run: pnpm --filter @heroui/react publish --no-git-checks --access public ${{ inputs.dry_run && '--dry-run' || '' }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
