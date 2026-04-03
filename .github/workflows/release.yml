@@ -30,6 +30,11 @@ jobs:
       - name: Install
         uses: ./.github/common-actions/install
 
+      - name: Setup Node for npm publish (OIDC)
+        uses: actions/setup-node@v4
+        with:
+          registry-url: "https://registry.npmjs.org"
+
       - name: Build packages
         run: pnpm build
 
@@ -43,9 +48,9 @@ jobs:
       - name: Publish @heroui/styles
         id: publish-styles
         working-directory: packages/styles
-        run: npm publish --access public ${{ inputs.dry_run && '--dry-run' || '' }}
+        run: npm publish --provenance --access public ${{ inputs.dry_run && '--dry-run' || '' }}
 
       - name: Publish @heroui/react
         if: steps.publish-styles.outcome == 'success'
         working-directory: packages/react
-        run: npm publish --access public ${{ inputs.dry_run && '--dry-run' || '' }}
+        run: npm publish --provenance --access public ${{ inputs.dry_run && '--dry-run' || '' }}
